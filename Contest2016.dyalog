@@ -1,11 +1,11 @@
 ﻿:Namespace Contest2016
 ⍝ === VARIABLES ===
 
-AboutMe←,⊂'I''m an Electrical and Computer Engineering student at the University of CapeTown. I have coded in all major languages including Java, Python Javascript, C, C++ among others.'
+AboutMe←,⊂'I''m an Electrical and Computer Engineering student at the University of CapeTown. I have coded in most of the major languages including Java, C, C++ among many others.'
 
 FilePath←'D:\GeekyPlans\Dyalog2016\'
 
-Reaction←,⊂'I throughly ebjoyed the competition as it challenged me to think in APL terms. I like that there are more prizes this year. '
+Reaction←,⊂'It was challenging in a good way. I learnt to better express code without loops'
 
 
 ⍝ === End of variables definition ===
@@ -212,26 +212,106 @@ t←1 8 9 3 2 7 6 5 4 10
 
 :EndNamespace 
 :Namespace gen
+⍝ === VARIABLES ===
+
+board←5 5⍴'∘∘∘∘∘∘∘BB∘RRBB∘∘RR∘∘∘∘∘∘∘'
+
+board2←5 5⍴'∘∘∘∘∘∘∘B∘BRRBB∘∘RR∘∘∘∘∘∘∘'
+
+counts←2 3⍴3 2 4 8 9 12
+
+d←'ASPIRIN' 'METAMUCIL' 'PENICILLIN'
+
+i←'PENICILIN' 'ASPIRIN 250MG' 'METAMUSEL' 'ASPRIN'
+
+t←2 3⍴3 2 4 8 9 12
+
+
+⍝ === End of variables definition ===
+
 (⎕IO ⎕ML ⎕WX)←1 0 3
 
-∇ r←chiSquareTest counts
+∇ r←chiSquareTest counts;exp;e
      ⍝ Function stub for 2016 APL Problem Solving Competition Phase 2
      ⍝ General Computing Problem 2 Task 2
+ exp←expected counts
+ r←+/,+/(e×e←exp-counts)÷exp
 ∇
 
-∇ r←expected counts
+∇ r←expected counts;rs;cs;sum
      ⍝ Function stub for 2016 APL Problem Solving Competition Phase 2
      ⍝ General Computing Problem 2 Task 1
+ rs←,+/counts
+ cs←,+/[1]counts
+ sum←+/rs
+ r←rs∘.×cs÷sum
 ∇
 
-∇ r←drugs matchDrugs inputs
+∇ r←drugs matchDrugs inputs;ind;ld;in;dist;dists
      ⍝ Function stub for 2016 APL Problem Solving Competition Phase 2
      ⍝ General Computing Problem 3 Task 1
+     ⍝ Levelshtein distance
+ dist←{⎕ML←0                     ⍝ Levenshtein distance.
+     a←(n+1)⍴(⍴⍺)+n←⍴⍵           ⍝ first row of matrix
+     f←⍵{⌊\⍵⌊(⊃⍵),(¯1↓⍵)-1+⍺=⍺⍺} ⍝ iteration step
+     z←⊃f/(⌽⍺),⊂a                ⍝ last row of matrix
+     ⊃⌽z
+ }
+ r←⍬
+ ld←⍴drugs
+     
+ :For in :In inputs
+     ind←dists⍳(⌊/dists←dists←(ld⍴⊂in)dist¨drugs)
+     
+     r←r,ind
+ :EndFor
 ∇
 
-∇ r←winner board
-     ⍝ Function stub for 2016 APL Problem Solving Competition Phase 2
-     ⍝ General Computing Problem 1 Task 1
+ uni←{⍵}
+
+∇ r←winner vec;c;u;i;max;maxu;m;t;v;s;j
+     
+ max←0
+ maxu←'∘'
+      ⍝ rows
+ :For i :In ⍳5
+     s←u[c⍳m←⌈/c←+/(u←∪,vec[i;])∘.=vec[i;]]
+     max←((~t)×max)+(t←(m>max)∨((m=4)∧~s='∘'))×m
+     maxu←(t,~t)/(s,maxu)
+ :EndFor
+     
+      ⍝ columns
+ :For i :In ⍳5
+     s←u[c⍳m←⌈/c←+/(u←∪,vec[;i])∘.=vec[;i]]
+     max←((~t)×max)+(t←(m>max)∨((m=4)∧~s='∘'))×m
+     maxu←(t,~t)/(s,maxu)
+ :EndFor
+     
+      ⍝diagonals
+ s←u[c⍳m←⌈/c←+/(u←∪,v)∘.=v←1 1⍉vec]
+ max←((~t)×max)+(t←(m>max)∨((m=4)∧~s='∘'))×m
+ maxu←(t,~t)/(s,maxu)
+     
+ s←u[c⍳m←⌈/c←+/(u←∪,v)∘.=v←1 1⍉¯4↑vec]
+ max←((~t)×max)+(t←(m>max)∨((m=4)∧~s='∘'))×m
+ maxu←(t,~t)/(s,maxu)
+     
+ s←u[c⍳m←⌈/c←+/(u←∪,v)∘.=v←1 1⍉¯4↑[2]vec]
+ max←((~t)×max)+(t←(m>max)∨((m=4)∧~s='∘'))×m
+ maxu←(t,~t)/(s,maxu)
+      ⍝square
+      ⍝⎕←maxu
+ :For i :In ⍳4
+     :For j :In ⍳4
+     
+         s←u[c⍳m←⌈/c←+/(u←∪,v)∘.=v←,vec[i,i+1;j,j+1]]
+         max←((~t)×max)+(t←(m>max)∨((m=4)∧~s='∘'))×m
+         maxu←(t,~t)/(s,maxu)
+     :EndFor
+ :EndFor
+     
+      ⍝⎕←maxu
+ r←maxu
 ∇
 
 :EndNamespace 
